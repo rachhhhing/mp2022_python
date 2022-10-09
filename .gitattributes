@@ -1,0 +1,4 @@
+week2/danmuku.csv filter=lfs diff=lfs merge=lfs -text
+week3/weibo.txt filter=lfs diff=lfs merge=lfs -text
+week5/final_none_duplicate.txt filter=lfs diff=lfs merge=lfs -text
+week5/clean_text.txt filter=lfs diff=lfs merge=lfs -text
