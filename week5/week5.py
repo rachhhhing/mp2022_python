@@ -131,7 +131,7 @@ def cleanword(filename):
 def main():
     #cleanword('week5/final_none_duplicate.txt')         #数据预处理，得到清洗的文本
     with open('week5/clean_text.txt','r',encoding='utf-8') as f:
-        text = f.read().splitlines()[:100]
+        text = f.read().splitlines()
         text = list(filter(None, text))                 #去除空值
     T = Tokenizer(text)
     #T = Tokenizer(text,'w')
