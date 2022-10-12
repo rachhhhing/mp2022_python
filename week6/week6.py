@@ -3,134 +3,172 @@ from PIL import Image
 from PIL import ImageFilter
 from matplotlib import pyplot as plt
 
-#ÊµÏÖ»ùÀà
+#å®ç°åŸºç±»
 class Filter:
-    def __init__(self, path):
+    def __init__(self, path, *plist):
         """
-        Á½¸öÊı¾İÊôĞÔ
-        image:´ı´¦ÀíµÄÍ¼Æ¬ÊµÀı£¬¼´PIL¿âµÄImageÊµÀı
-        plist:²ÎÊıÁĞ±í£¬ÓÃÒÔ´æ´¢¿ÉÄÜÊ¹ÓÃ²ÎÊıµÄÂË²¨Æ÷µÄ²ÎÊı
+        ä¸¤ä¸ªæ•°æ®å±æ€§
+        image:å¾…å¤„ç†çš„å›¾ç‰‡å®ä¾‹ï¼Œå³PILåº“çš„Imageå®ä¾‹
+        plist:å‚æ•°åˆ—è¡¨ï¼Œç”¨ä»¥å­˜å‚¨å¯èƒ½ä½¿ç”¨å‚æ•°çš„æ»¤æ³¢å™¨çš„å‚æ•°
         """
         self._image = Image.open(path)
-        self._plist = []
+        self._plist = plist
     
     def filter(self):
         """
-        ÄÜ¹»¶ÔImageÊµÀıµÄÌØ¶¨´¦Àí
+        èƒ½å¤Ÿå¯¹Imageå®ä¾‹çš„ç‰¹å®šå¤„ç†ï¼Œåœ¨å­ç±»ä¸­å…·ä½“å®ç°
         """
         pass
 
-#ÊµÏÖËÄ¸ö×ÓÀà£¬filter()·½·¨½øĞĞÊµÏÖ
+#å®ç°å››ä¸ªå­ç±»ï¼Œfilter()æ–¹æ³•è¿›è¡Œå®ç°
 class FIND_EDGES_Filter(Filter):
     '''
-    ÌáÈ¡±ßÔµ
+    æå–è¾¹ç¼˜
     '''
-    def __init__(self,path):
-        super().__init__(self, path)
+    def __init__(self, path, *plist):
+        super().__init__(path, plist)
     
     def filter(self):
         image_filter = self._image.filter(ImageFilter.FIND_EDGES)
+        self._image = image_filter
         return image_filter
 
-class Sharpen_Filter(Filter):
+class SHARPEN_Filter(Filter):
     '''
-    Èñ»¯
+    é”åŒ–
     '''
-    def __init__(self,path):
-        super().__init__(self, path)
+    def __init__(self, path, *plist):
+        super().__init__(path, plist)
     
     def filter(self):
-        image_filter = self._image.filter(ImageFilter.Sharpen)
+        image_filter = self._image.filter(ImageFilter.SHARPEN)
+        self._image = image_filter
         return image_filter
 
-class Blur_Filter(Filter):
+class BLUR_Filter(Filter):
     '''
-    Ä£ºı
+    æ¨¡ç³Š
     '''
-    def __init__(self,path):
-        super().__init__(self, path)
+    def __init__(self, path, *plist):
+        super().__init__(path, plist)
     
     def filter(self):
-        image_filter = self._image.filter(ImageFilter.Blur)
+        image_filter = self._image.filter(ImageFilter.BLUR)
+        self._image = image_filter
         return image_filter
 
-class Resize_Filter(Filter):
+class RESIZE_Filter(Filter):
     '''
-    ´óĞ¡µ÷Õû
+    å¤§å°è°ƒæ•´
     '''
-    def __init__(self, path, width_rate, hight_rate):
-        super().__init__(self, path)
-        self._wrate = width_rate
-        self._hrate = hight_rate
+    def __init__(self, path, *plist):
+        super().__init__(path, plist)
     
     def filter(self):
         w,h = self._image.size
-        image_filter = self._image.resize((int(w*self._wrate),int(h*self._hrate)))
+        wrate = self._plist[0]
+        hrate = self._plist[1]
+        image_filter = self._image.resize((int(w*wrate),int(h*hrate)))
+        self._image = image_filter
         return image_filter
 
-#ÊµÏÖÀàImageShop,ÊµÏÖ¾ßÌåÅúÁ¿´¦ÀíÍ¼Æ¬Àà
-class ImageShop(Filter):
-    def __init__(self, formation, file_path, image_list, image_process):
+#å®ç°ç±»ImageShop,å®ç°å…·ä½“æ‰¹é‡å¤„ç†å›¾ç‰‡ç±»
+class ImageShop:
+    def __init__(self, formation, filepath):
         """
-        ËÄ¸öÊı¾İÊôĞÔ
-        formation:Í¼Æ¬¸ñÊ½
-        file_path:Í¼Æ¬ÎÄ¼ş£¨Ó¦¸ÃÖ§³ÖÄ¿Â¼£©
-        image_list:´æ´¢Í¼Æ¬ÊµÀı(ImageÊµÀı)µÄÁĞ±í
-        image_process£º´æ´¢´¦Àí¹ıµÄÍ¼Æ¬
+        ä¸‰ä¸ªæ•°æ®å±æ€§
+        formation:å›¾ç‰‡æ ¼å¼
+        filepath:å›¾ç‰‡æ–‡ä»¶ï¼ˆåº”è¯¥æ”¯æŒç›®å½•ï¼‰
+        imglist:å­˜å‚¨å¾…å¤„ç†å›¾ç‰‡åˆ—è¡¨
+        imgpro:å‚¨å­˜å¤„ç†åçš„å›¾ç‰‡åˆ—è¡¨
         """
         self._formation = formation
-        self._filepath = file_path
-        self._imglist = image_list
-        self._imgpro = image_process
+        self._filepath = filepath
+        self._imglist = []
+        self._imgpro = []
 
     def load_images(self):
         """
-        ´ÓÂ·¾¶¼ÓÔØÌØ¶¨¸ñÊ½µÄÍ¼Æ¬
+        ä»è·¯å¾„åŠ è½½ç‰¹å®šæ ¼å¼çš„å›¾ç‰‡
         """
-        dirs = os.listdir(self._filepath)                           # »ñÈ¡Ö¸¶¨Â·¾¶ÏÂµÄÎÄ¼ş
+        dirs = os.listdir(self._filepath)                           # è·å–æŒ‡å®šè·¯å¾„ä¸‹çš„æ–‡ä»¶
         for path in dirs:
-            if os.path.splitext(path)[1] == self._formation:        # ¼ÓÔØÄ¿Â¼ÖĞµÄËùÓĞÌØ¶¨¸ñÊ½Í¼Æ¬
-                image = Image.open(path)
-                self._imglist.append(img)
+            if os.path.splitext(path)[1] == self._formation:        # åŠ è½½ç›®å½•ä¸­çš„æ‰€æœ‰ç‰¹å®šæ ¼å¼å›¾ç‰‡
+                img = Filter(self._filepath + '/' + path)
+                self._imglist.append(img)                           # ä»¥Fliterç±»å‚¨å­˜
 
-    def __batch_ps(self, Filter):
+    def __batch_ps(self, Filter, *plist):
         """
-        ÀûÓÃÄ³¸ö¹ıÂËÆ÷¶ÔËùÓĞÍ¼Æ¬½øĞĞ´¦Àí
+        å¤„ç†å›¾ç‰‡çš„å†…éƒ¨æ–¹æ³•ï¼Œåˆ©ç”¨æŸä¸ªè¿‡æ»¤å™¨(Filter)å¯¹æ‰€æœ‰å›¾ç‰‡è¿›è¡Œå¤„ç†
         """
-        for img in self._imglist:
-            img_pro = Filter.filter(img)
-            self.imgpro[each] = img
-        for i in self.Image_list:
-            Image_p = FIND_EDGES_Filter(self.path)
-            Image_p = Image_p.filter(i)
-            self.Image_process.append(Image_p)
+        for i in range(len(self._imglist)):
+            img = self._imgpro[i]
+            img._plist = plist                                      # æ›´æ–°å‚æ•°å±æ€§
+            img_pro = Filter.filter(img)                            # å¤„ç†å›¾ç‰‡
+            self._imgpro[i] = img
 
-    def batch_ps(self,w_rate,h_rate,*args):
-        for i in range(len(self.Image_list)):
-            if args[0] == '1':
-                Image_t = FIND_EDGES_Filter(self.path_list[i])
-                Image_t = Image_t.filter(Image_list[i])
-                self.Image_process.append(Image_t)
-            if args[0] == '2':
-                Image_t = EDGE_ENHANCE_Filter(self.path_list[i])
-                Image_t = Image_t.filter(Image_list[i])
-                self.Image_process.append(Image_t)
-            if args[0] == '3':
-                Image_t = GaussianBlur_Filter(self.path_list[i])
-                Image_t = Image_t.filter(Image_list[i])
-                self.Image_process.append(Image_t)
-            if args[0] == '4':
-                Image_t = new_Filter(self.path_list[i],w_rate,h_rate)
-                Image_t = Image_t.filter(Image_list[i])
-                self.Image_process.append(Image_t)
+    def batch_ps(self, *args):
+        """
+        æ‰¹é‡å¤„ç†å›¾ç‰‡çš„å¯¹å¤–å…¬å¼€æ–¹æ³•ï¼Œå¯ä»¥åŒæ—¶è¿›è¡Œè‹¥å¹²æ“ä½œ
+        args:ä¸å®šé•¿æ“ä½œå‚æ•°ï¼Œå‚æ•°æŒ‰ä¸€ç§ç‰¹å®šæ ¼å¼çš„tupleè¾“å…¥ï¼Œæ¯”å¦‚ï¼ˆæ“ä½œåï¼Œå‚æ•°ï¼‰
+        """
+        self._imgpro = self._imglist                                # åˆå§‹åŒ–å¤„ç†åçš„å›¾ç‰‡åˆ—è¡¨
+        for op in args:
+            if op == 'find_edges':
+                self.__batch_ps(FIND_EDGES_Filter)
+            elif op == 'sharpen':
+                self.__batch_ps(SHARPEN_Filter)
+            elif op == 'blur':
+                self.__batch_ps(BLUR_Filter)
+            elif op[0] == 'resize':
+                self.__batch_ps(RESIZE_Filter, *op[1:])
+            else:
+                print("Error, do not find operation named {}.".format(op[0]))
+                break
+        
+    def display(self, row=5, col=5, max_num=100):
+        """
+        å¤„ç†æ•ˆæœæ˜¾ç¤º
+        row&col:å›¾ç‰‡å‘ˆç°å¯èƒ½éœ€è¦è¡Œå’Œåˆ—
+        max_num:æœ€å¤šæ˜¾ç¤ºå¤šå°‘å¼ 
+        """
+        if len(self._imgpro) > max_num:                                # æ§åˆ¶æœ€å¤§æ˜¾ç¤ºå›¾ç‰‡æ•°
+            self._imgpro = self._imgpro[:max_num]
+        for num in range(0,len(self._imgpro), row*col):
+            for i in range(row*col):                                    # æ§åˆ¶æ¯å¼ å­å›¾å±•ç¤ºå›¾ç‰‡æ•°é‡
+                if num + i < len(self._imgpro):
+                    img = self._imgpro[num+i]
+                    plt.subplot(row, col, i+1)
+                    plt.imshow(img._image)
+            plt.show()
 
-    def display(self,row,col):
-        num = len(self.Image_process)
-        for i in range(num):
-            plt.subplot(row,col,i+1)
-            plt.imshow(self.Image_process[i])
-        plt.show()
+    def save(self, path, formation = '.png'):
+        """
+        å¤„ç†ç»“æœè¾“å‡º
+        path:è¾“å‡ºè·¯å¾„
+        formation:è¾“å‡ºæ ¼å¼ï¼Œé»˜è®¤ä¸ºpng
+        """
+        for i in range(len(self._imgpro)):
+            img = self._imgpro[i]
+            img._image.save(path+str(i+1)+formation)
 
-    def save(self,path,formation):
-        for i in range(len(self.Image_process)):
-            self.Image_process[i].save(path+str(i+1)+'p'+'.'+formation)
+#å®ç°æµ‹è¯•ç±»TestImageShopï¼Œå®ç°å¯¹ImageShopç±»çš„æµ‹è¯•
+class TestImageShop:
+    def __init__(self, formation, filepath):
+        self._test = ImageShop(formation, filepath)
+        self._test.load_images()
+
+    def text_imageshop(self, *args):
+        self._test.batch_ps(*args)
+        self._test.display(2, 2)
+        self._test.save('week6/photo_fliter/')
+
+def main():
+    formation = '.png'
+    filepath = 'week6/photo'
+
+    T = TestImageShop(formation, filepath)
+    T.text_imageshop('sharpen','find_edges')
+    #T.text_imageshop('blur', ('resize', 0.5, 0.5))
+
+if __name__ == '__main__': main()
