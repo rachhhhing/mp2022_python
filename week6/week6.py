@@ -30,7 +30,6 @@ class FIND_EDGES_Filter(Filter):
     
     def filter(self):
         image_filter = self._image.filter(ImageFilter.FIND_EDGES)
-        self._image = image_filter
         return image_filter
 
 class SHARPEN_Filter(Filter):
@@ -42,7 +41,6 @@ class SHARPEN_Filter(Filter):
     
     def filter(self):
         image_filter = self._image.filter(ImageFilter.SHARPEN)
-        self._image = image_filter
         return image_filter
 
 class BLUR_Filter(Filter):
@@ -54,7 +52,6 @@ class BLUR_Filter(Filter):
     
     def filter(self):
         image_filter = self._image.filter(ImageFilter.BLUR)
-        self._image = image_filter
         return image_filter
 
 class RESIZE_Filter(Filter):
@@ -69,7 +66,6 @@ class RESIZE_Filter(Filter):
         wrate = self._plist[0]
         hrate = self._plist[1]
         image_filter = self._image.resize((int(w*wrate),int(h*hrate)))
-        self._image = image_filter
         return image_filter
 
 #实现类ImageShop,实现具体批量处理图片类
@@ -101,11 +97,11 @@ class ImageShop:
         """
         处理图片的内部方法，利用某个过滤器(Filter)对所有图片进行处理
         """
-        for i in range(len(self._imglist)):
+        for i in range(len(self._imgpro)):
             img = self._imgpro[i]
             img._plist = plist                                      # 更新参数属性
             img_pro = Filter.filter(img)                            # 处理图片
-            self._imgpro[i] = img
+            img._image = img_pro                                    # 更新处理的图片
 
     def batch_ps(self, *args):
         """
@@ -132,7 +128,7 @@ class ImageShop:
         row&col:图片呈现可能需要行和列
         max_num:最多显示多少张
         """
-        if len(self._imgpro) > max_num:                                # 控制最大显示图片数
+        if len(self._imgpro) > max_num:                                 # 控制最大显示图片数
             self._imgpro = self._imgpro[:max_num]
         for num in range(0,len(self._imgpro), row*col):
             for i in range(row*col):                                    # 控制每张子图展示图片数量
