@@ -157,14 +157,14 @@ class TestImageShop:
     def text_imageshop(self, *args):
         self._test.batch_ps(*args)
         self._test.display(2, 2)
-        self._test.save('week6/photo_fliter/')
+        self._test.save('week6/photo_filter/')
 
 def main():
     formation = '.png'
     filepath = 'week6/photo'
 
     T = TestImageShop(formation, filepath)
-    T.text_imageshop('sharpen','find_edges')
-    #T.text_imageshop('blur', ('resize', 0.5, 0.5))
+    #T.text_imageshop('sharpen','find_edges')
+    T.text_imageshop('blur', ('resize', 0.5, 0.5))
 
 if __name__ == '__main__': main()
