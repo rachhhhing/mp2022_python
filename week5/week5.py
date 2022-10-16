@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 class Tokenizer:
     def __init__(self, chars, coding='c', PDA=0):
         """
-        ³õÊ¼»¯º¯Êı£º³õÊ¼»¯Àà£¬²¢ÇÒ¹¹½¨±àÂë´Êµä
+        åˆå§‹åŒ–å‡½æ•°ï¼šåˆå§‹åŒ–ç±»ï¼Œå¹¶ä¸”æ„å»ºç¼–ç è¯å…¸
         """
         self._chars = chars
         self._coding = coding
@@ -16,12 +16,12 @@ class Tokenizer:
 
         dic = {}
         dic['[PAD]'] = PDA
-        i = 0                                   #´Ó0¿ªÊ¼±àÂë
+        i = 0                                   #ä»0å¼€å§‹ç¼–ç 
         if coding=='c':
             for char in chars:
                 for ch in char:
                     if ch not in dic.keys():
-                        if i == PDA: i+=1       #Ìø¹ıPDAµÄÖµ
+                        if i == PDA: i+=1       #è·³è¿‡PDAçš„å€¼
                         dic[ch] = i; i+=1
         elif coding=='w':
             for char in chars:
@@ -33,7 +33,7 @@ class Tokenizer:
     
     def tokenize(self, sentence):
         """
-        ·Ö´Ê£¨×Ö£©º¯Êı£ºÊäÈëÒ»¾ä»°£¬·µ»Ø·Ö´Ê£¨×Ö£©ºóµÄ×Ö·ûÁĞ±í
+        åˆ†è¯ï¼ˆå­—ï¼‰å‡½æ•°ï¼šè¾“å…¥ä¸€å¥è¯ï¼Œè¿”å›åˆ†è¯ï¼ˆå­—ï¼‰åçš„å­—ç¬¦åˆ—è¡¨
         """
         list_of_chars = []
         if self._coding == 'c':
@@ -45,7 +45,7 @@ class Tokenizer:
     
     def encode(self, list_of_chars):
         """
-        ±àÂëº¯Êı£ºÊäÈë×Ö·ûÁĞ±í£¬·µ»Ø×ª»¯ºóµÄÊı×ÖÁĞ±í
+        ç¼–ç å‡½æ•°ï¼šè¾“å…¥å­—ç¬¦åˆ—è¡¨ï¼Œè¿”å›è½¬åŒ–åçš„æ•°å­—åˆ—è¡¨
         """
         tokens = []
         for char in list_of_chars:
@@ -54,7 +54,7 @@ class Tokenizer:
 
     def get_seq_len(self):
         """
-        µÃ³¤º¯Êı:¹Û²ì¾ä×Ó³¤¶È·Ö²¼£¬È·¶¨Ò»¸öºÏÊÊµÄseq_len
+        å¾—é•¿å‡½æ•°:è§‚å¯Ÿå¥å­é•¿åº¦åˆ†å¸ƒï¼Œç¡®å®šä¸€ä¸ªåˆé€‚çš„seq_len
         """
         text = self._chars
         text_len = []
@@ -65,16 +65,16 @@ class Tokenizer:
             for txt in text:
                 text_len.append(len(jieba.lcut(txt)))
         sns.distplot(text_len)
-        plt.title('text length distribution_{}'.format(self._coding))		# ±êÌâ
-        plt.xlabel('length')                                        		# xÖáÃû
+        plt.title('text length distribution_{}'.format(self._coding))		# æ ‡é¢˜
+        plt.xlabel('length')                                        		# xè½´å
         #plt.savefig('text length distribution_{}.png'.format(self._coding))
         plt.show()
-        seq_len = np.percentile(text_len, 75)		#ÓÃ75%·ÖÎ»Êı×÷Îªseq_lenµÄÖµ
+        seq_len = np.percentile(text_len, 75)		#ç”¨75%åˆ†ä½æ•°ä½œä¸ºseq_lençš„å€¼
         return int(seq_len)
 
     def trim(self, tokens, seq_len):
         """
-        Õû³¤º¯Êı£ºÊäÈëÊı×ÖÁĞ±ítokens£¬ÕûÀíÊı×ÖÁĞ±íµÄ³¤¶È¡£²»×ãseq_lenµÄ²¿·ÖÓÃPAD²¹×ã£¬³¬¹ıµÄ²¿·Ö½Ø¶Ï¡£
+        æ•´é•¿å‡½æ•°ï¼šè¾“å…¥æ•°å­—åˆ—è¡¨tokensï¼Œæ•´ç†æ•°å­—åˆ—è¡¨çš„é•¿åº¦ã€‚ä¸è¶³seq_lençš„éƒ¨åˆ†ç”¨PADè¡¥è¶³ï¼Œè¶…è¿‡çš„éƒ¨åˆ†æˆªæ–­ã€‚
         """
         if len(tokens) >= seq_len:
             return tokens[:seq_len]
@@ -85,7 +85,7 @@ class Tokenizer:
     
     def decode(self, tokens):
         """
-        ·­Òëº¯Êı£º½«Ä£ĞÍÊä³öµÄÊı×ÖÁĞ±í·­Òë»Ø¾ä×Ó£¬Èç¹ûÓĞPAD£¬Êä³ö'[PAD]'
+        ç¿»è¯‘å‡½æ•°ï¼šå°†æ¨¡å‹è¾“å‡ºçš„æ•°å­—åˆ—è¡¨ç¿»è¯‘å›å¥å­ï¼Œå¦‚æœæœ‰PADï¼Œè¾“å‡º'[PAD]'
         """
         key = list(self._dic.keys())
         value = list(self._dic.values())
@@ -101,7 +101,7 @@ class Tokenizer:
     
     def encode_all(self, seq_len):
         """
-        ±àÂëÎÄ±¾£º·µ»ØËùÓĞÎÄ±¾(chars)µÄ³¤¶ÈÎªseq_lenµÄtokens
+        ç¼–ç æ–‡æœ¬ï¼šè¿”å›æ‰€æœ‰æ–‡æœ¬(chars)çš„é•¿åº¦ä¸ºseq_lençš„tokens
         """
         tokens_list = []
         for sen in self._chars:
@@ -111,28 +111,28 @@ class Tokenizer:
 
 def cleanword(filename):
     """
-    ÇåÏ´ÎÄ±¾º¯Êı£ºÔ¤´¦ÀíÊı¾İÎÄ¼ş£¬Ï´³öÎ¢²©ÄÚÈİ
+    æ¸…æ´—æ–‡æœ¬å‡½æ•°ï¼šé¢„å¤„ç†æ•°æ®æ–‡ä»¶ï¼Œæ´—å‡ºå¾®åšå†…å®¹
     """       
     with open(filename,'r',encoding='utf-8') as f:
         data = pd.read_csv(f, dtype=str, delimiter="\t")
         for i in range(len(data)):
-            text = data.iloc[i,1]                       # ¶ÁÈ¡Î¢²©text
+            text = data.iloc[i,1]                       # è¯»å–å¾®åštext
             try:
-                text = re.sub(r"(»Ø¸´)?(//)?\s*@\S*?\s*(:| |$)", " ", text)  # È¥³ıÕıÎÄÖĞµÄ@ºÍ»Ø¸´/×ª·¢ÖĞµÄÓÃ»§Ãû
-                text = re.sub(r'http[:.]+\S+', '', text)    # ³ıÈ¥url
-                text = text.replace("ÎÒÔÚ:", "")            # È¥³ıÎŞÒâÒåµÄ´ÊÓï
-                text = text.replace("ÎÒÔÚÕâÀï:","")
-                text = re.sub(r"\s+", " ", text)            # ºÏ²¢ÕıÎÄÖĞ¹ı¶àµÄ¿Õ¸ñ
+                text = re.sub(r"(å›å¤)?(//)?\s*@\S*?\s*(:| |$)", " ", text)  # å»é™¤æ­£æ–‡ä¸­çš„@å’Œå›å¤/è½¬å‘ä¸­çš„ç”¨æˆ·å
+                text = re.sub(r'http[:.]+\S+', '', text)    # é™¤å»url
+                text = text.replace("æˆ‘åœ¨:", "")            # å»é™¤æ— æ„ä¹‰çš„è¯è¯­
+                text = text.replace("æˆ‘åœ¨è¿™é‡Œ:","")
+                text = re.sub(r"\s+", " ", text)            # åˆå¹¶æ­£æ–‡ä¸­è¿‡å¤šçš„ç©ºæ ¼
                 file = open('week5/clean_text.txt','a',encoding='utf-8')
                 file.write(text+'\n')
             except:
                 continue
         
 def main():
-    #cleanword('week5/final_none_duplicate.txt')         #Êı¾İÔ¤´¦Àí£¬µÃµ½ÇåÏ´µÄÎÄ±¾
+    #cleanword('week5/final_none_duplicate.txt')         #æ•°æ®é¢„å¤„ç†ï¼Œå¾—åˆ°æ¸…æ´—çš„æ–‡æœ¬
     with open('week5/clean_text.txt','r',encoding='utf-8') as f:
         text = f.read().splitlines()
-        text = list(filter(None, text))                 #È¥³ı¿ÕÖµ
+        text = list(filter(None, text))                 #å»é™¤ç©ºå€¼
     T = Tokenizer(text)
     #T = Tokenizer(text,'w')
     #print(T._dic)
@@ -140,7 +140,7 @@ def main():
     #print(seq_len)
     
     '''
-    print("-----³¤¶È´óÓÚseq_len-----")
+    print("-----é•¿åº¦å¤§äºseq_len-----")
     txt = text[0]
     print("#text#")
     print(txt)
@@ -149,7 +149,7 @@ def main():
     print(code)
     print("#decode#" )
     T.decode(code)
-    print("-----³¤¶ÈĞ¡ÓÚseq_len-----")
+    print("-----é•¿åº¦å°äºseq_len-----")
     txt = text[1]
     print("#text#")
     print(txt)
