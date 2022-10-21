@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Awesome-pyecharts</title>
+            <script type="text/javascript" src="https://assets.pyecharts.org/assets/echarts.min.js"></script>
+        <script type="text/javascript" src="https://assets.pyecharts.org/assets/maps/beijing.js"></script>
+
+</head>
+<body>
+    <div id="7bc6b41841a9424c85c98768130a509c" class="chart-container" style="width:1000px; height:600px;"></div>
+    <script>
+        var chart_7bc6b41841a9424c85c98768130a509c = echarts.init(
+            document.getElementById('7bc6b41841a9424c85c98768130a509c'), 'dark', {renderer: 'canvas'});
+        var option_7bc6b41841a9424c85c98768130a509c = {
+    "animation": true,
+    "animationThreshold": 2000,
+    "animationDuration": 1000,
+    "animationEasing": "cubicOut",
+    "animationDelay": 0,
+    "animationDurationUpdate": 300,
+    "animationEasingUpdate": "cubicOut",
+    "animationDelayUpdate": 0,
+    "series": [
+        {
+            "type": "heatmap",
+            "name": "SO2",
+            "coordinateSystem": "geo",
+            "data": [
+                {
+                    "name": "\u5965\u4f53\u4e2d\u5fc3",
+                    "value": [
+                        116.401665,
+                        39.985069,
+                        23.63710777626194
+                    ]
+                },
+                {
+                    "name": "\u660c\u5e73",
+                    "value": [
+                        116.23128,
+                        40.22077,
+                        14.098360655737705
+                    ]
+                },
+                {
+                    "name": "\u5b9a\u9675",
+                    "value": [
+                        116.238896,
+                        40.286598,
+                        15.607192254495159
+                    ]
+                },
+                {
+                    "name": "\u4e1c\u56db",
+                    "value": [
+                        116.417679,
+                        39.924995,
+                        23.708276797829036
+                    ]
+                },
+                {
+                    "name": "\u5b98\u56ed",
+                    "value": [
+                        116.355858,
+                        39.932392,
+                        22.74898236092266
+                    ]
+                },
+                {
+                    "name": "\u53e4\u57ce",
+                    "value": [
+                        116.193359,
+                        39.911766,
+                        23.25951086956522
+                    ]
+                },
+                {
+                    "name": "\u6000\u67d4",
+                    "value": [
+                        116.63177,
+                        40.316,
+                        9.987738419618529
+                    ]
+                },
+                {
+                    "name": "\u519c\u5c55\u9986",
+                    "value": [
+                        116.46846,
+                        39.939819,
+                        23.20788043478261
+                    ]
+                },
+                {
+                    "name": "\u987a\u4e49",
+                    "value": [
+                        116.65477,
+                        40.13012,
+                        14.129760225669958
+                    ]
+                },
+                {
+                    "name": "\u5929\u575b",
+                    "value": [
+                        116.311478,
+                        40.029076,
+                        12.735135135135135
+                    ]
+                },
+                {
+                    "name": "\u4e07\u67f3",
+                    "value": [
+                        116.296959,
+                        39.967056,
+                        25.440976933514246
+                    ]
+                },
+                {
+                    "name": "\u4e07\u5bff\u897f\u5bab",
+                    "value": [
+                        116.36853,
+                        39.879616,
+                        24.5
+                    ]
+                }
+            ],
+            "pointSize": 20,
+            "blurSize": 20,
+            "label": {
+                "show": false,
+                "position": "top",
+                "margin": 8
+            },
+            "rippleEffect": {
+                "show": true,
+                "brushType": "stroke",
+                "scale": 2.5,
+                "period": 4
+            }
+        }
+    ],
+    "legend": [
+        {
+            "data": [
+                "SO2"
+            ],
+            "selected": {
+                "SO2": true
+            },
+            "show": true,
+            "padding": 5,
+            "itemGap": 10,
+            "itemWidth": 25,
+            "itemHeight": 14
+        }
+    ],
+    "tooltip": {
+        "show": true,
+        "trigger": "item",
+        "triggerOn": "mousemove|click",
+        "axisPointer": {
+            "type": "line"
+        },
+        "showContent": true,
+        "alwaysShowContent": false,
+        "showDelay": 0,
+        "hideDelay": 100,
+        "formatter": function (params) {        return params.name + ' : ' + params.value[2];    },
+        "textStyle": {
+            "fontSize": 14
+        },
+        "borderWidth": 0,
+        "padding": 5
+    },
+    "title": [
+        {
+            "text": "\u5317\u4eac\u7a7a\u6c14\u8d28\u91cf\u5206\u5e03",
+            "padding": 5,
+            "itemGap": 10
+        }
+    ],
+    "visualMap": {
+        "show": true,
+        "type": "piecewise",
+        "min": 0,
+        "max": 25.440976933514246,
+        "inRange": {
+            "color": [
+                "#50a3ba",
+                "#eac763",
+                "#d94e5d"
+            ]
+        },
+        "calculable": true,
+        "inverse": false,
+        "splitNumber": 5,
+        "orient": "vertical",
+        "showLabel": true,
+        "itemWidth": 20,
+        "itemHeight": 14,
+        "borderWidth": 0
+    },
+    "geo": {
+        "map": "\u5317\u4eac",
+        "roam": true,
+        "aspectScale": 0.75,
+        "nameProperty": "name",
+        "selectedMode": false,
+        "emphasis": {}
+    }
+};
+        chart_7bc6b41841a9424c85c98768130a509c.setOption(option_7bc6b41841a9424c85c98768130a509c);
+    </script>
+</body>
+</html>
