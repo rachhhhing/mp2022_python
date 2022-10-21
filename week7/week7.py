@@ -21,7 +21,7 @@ class Data_analyze:
         :param dir_path:数据文件所在文件夹
         """
         self._df = []                                           # 每个csv文件按df格式储存进列表
-        self._area = ["Aotizhongxin","Changping","Dingling","Dongsi","Guanyuan","Gucheng","Huairou","Nongzhanguan","Shunyi","Tiantan","Wanliu","Wanshouxigong"]
+        self._region = ["Aotizhongxin","Changping","Dingling","Dongsi","Guanyuan","Gucheng","Huairou","Nongzhanguan","Shunyi","Tiantan","Wanliu","Wanshouxigong"]
         self._pollutant = ["PM2.5","PM10","SO2","NO2","CO","O3"]
         self._climate = ["TEMP","PRES","DEWP","RAIN","wd","WSPM"]
 
@@ -34,16 +34,16 @@ class Data_analyze:
                 self._df.append(df)
         print("-----数据读取完成-----")
 
-    def time_analyze(self, pol, area):
+    def time_analyze(self, pol, region):
         """
         时间分析：某区域某类型污染物随时间的变化(PS:以均值代表每天的污染物含量)
 
         :param pol:污染物类型
-        :param area:某区域
+        :param region:某区域
         :return pol_time:某污染物在该地区每一天的含量值
         """
         data_time = []
-        df = self._df[self._area.index(area)]
+        df = self._df[self._region.index(region)]
         for n in range(1,len(df)+1,24):
             time = date(df.at[n,'year'], df.at[n,'month'], df.at[n,'day'])  # 获得该日期                                         
             pol_mean = df[pol][n-1:n+23].mean()                             # 获得该天下污染物的均值
@@ -64,24 +64,24 @@ class Data_analyze:
         data_space = []
         if len(time) == 1:
             for df in self._df:
-                area = df.iloc[0,-1]
+                region = df.iloc[0,-1]
                 df_year = df[df['year'] == time[0]]
                 pol_mean = df_year[pol].mean()
-                data_space.append([area, pol_mean])
+                data_space.append([region, pol_mean])
         elif len(time) == 2:
             for df in self._df:
-                area = df.iloc[0,-1]
+                region = df.iloc[0,-1]
                 df_month = df[(df['year'] == time[0]) & (df['month'] == time[1])]
                 pol_mean = df_month[pol].mean()
-                data_space.append([area, pol_mean])
+                data_space.append([region, pol_mean])
         else:
             for df in self._df:
-                area = df.iloc[0,-1]
+                region = df.iloc[0,-1]
                 df_day = df[(df['year'] == time[0]) & (df['month'] == time[1]) & (df['day'] == time[2])]
                 pol_mean = df_day[pol].mean()
-                data_space.append([area, pol_mean])
-        pol_space = pd.DataFrame(data_space, columns=['Area', pol])
-        pol_space = pd.DataFrame(pol_space).set_index('Area')
+                data_space.append([region, pol_mean])
+        pol_space = pd.DataFrame(data_space, columns=['Region', pol])
+        pol_space = pd.DataFrame(pol_space).set_index('Region')
         return pol_space
 
 class Data_view(Data_analyze):
@@ -91,19 +91,19 @@ class Data_view(Data_analyze):
     def __init__(self, dir_path):
         super().__init__(dir_path)
 
-    def time_view(self, pol, area):
+    def time_view(self, pol, region):
         """
         时间分析可视化：画折线图以及热力图
         """
         #画折线图
-        df = super().time_analyze(pol, area)
+        df = super().time_analyze(pol, region)
         df_month = df.resample("M").mean()
 
         plt.subplot(2, 1, 1)
         df[pol].plot()
         plt.xlabel("")
         plt.ylabel(f'{pol} day average')
-        plt.title(f'{pol} in {area}')
+        plt.title(f'{pol} in {region}')
 
         plt.subplot(2, 1, 2)
         df_month[pol].plot()
@@ -120,7 +120,7 @@ class Data_view(Data_analyze):
                  cbar_kws={'shrink':.8, 'label':pol})
         ax.set_yticklabels(ax.get_yticklabels(), rotation=0, fontsize=10)
         ax.set_xticklabels(ax.get_xticklabels(), rotation=0, fontsize=10)
-        plt.title(f'Average {pol} in {area}', fontdict={'fontsize':18}, pad=14)
+        plt.title(f'Average {pol} in {region}', fontdict={'fontsize':18}, pad=14)
         plt.show()
         
     def space_view(self, pol, *time):
@@ -133,7 +133,7 @@ class Data_view(Data_analyze):
         cmap = plt.get_cmap("tab20c")
         color=cmap(range(12))
         plt.pie(data_list, colors = color, 
-                labels=self._area,
+                labels=self._region,
                 textprops = {'fontsize':7, 'color':'k'},
                 autopct='%.2f%%')
         plt.title(f"Beijing {pol} distribution in {str(time)[1:][:-1]}")
@@ -144,8 +144,8 @@ class Data_view(Data_analyze):
                                 height='600px', 
                                 theme=ThemeType.DARK),)
         g.add_schema(maptype='北京')
-        area = ['奥体中心', '昌平', '定陵', '东四', '官园', '古城', '怀柔', '农展馆', '顺义', '天坛', '万柳', '万寿西宫']
-        area_loc = [[39.985069,116.401665],
+        region = ['奥体中心', '昌平', '定陵', '东四', '官园', '古城', '怀柔', '农展馆', '顺义', '天坛', '万柳', '万寿西宫']
+        region_loc = [[39.985069,116.401665],
                     [40.22077,116.23128],
                     [40.286598,116.238896],
                     [39.924995,116.417679],
@@ -157,12 +157,12 @@ class Data_view(Data_analyze):
                     [40.029076,116.311478],
                     [39.967056,116.296959],
                     [39.879616,116.36853]]
-        for i in range(len(area)):
+        for i in range(len(region)):
             # 定义坐标对应的名称，添加到坐标库中 add_coordinate(name, lng, lat)
-            g.add_coordinate(area[i], area_loc[i][1], area_loc[i][0])
+            g.add_coordinate(region[i], region_loc[i][1], region_loc[i][0])
         # 将数据添加到地图上
         g.add(  series_name = pol,                              # 系列名称
-                data_pair = list(zip(area, data_list)),         # 数据项 (坐标点名称，坐标点值)
+                data_pair = list(zip(region, data_list)),       # 数据项 (坐标点名称，坐标点值)
                 blur_size = 20,
                 symbol_size = 15,
                 type_ = ChartType.HEATMAP                       #类型选为热力图
@@ -177,55 +177,66 @@ class Data_view(Data_analyze):
         # 渲染
         g.render(f"week7/Beijing {pol} distribution in {str(time)[1:][:-1]}.html")
 
-class NotnumError(ValueError):
-    def __init__(self,year,province,industry,type):
-        self.year = year
-        self.province = province
-        self.industry = industry
-        self.type = type
-        self.message = f"the data of {province} in {year} has nan about {industry} and the type is {type}"
+class NotNumError(ValueError):
+    '''
+    空值异常值类
+    '''
+    def __init__(self, region, year, month, day, hour, pollutant):
+        self._region = region
+        self._year = year
+        self._month = month
+        self._day = day
+        self._hour = hour
+        self._pollutant = pollutant
+        self._message = f"{region} Sheet: In {year}-{month}-{day} {hour}h the {pollutant} data has NotNumError."
 
-class NotnumberTest(Data_analyze):
-    def __init__(self,path_list):
-        Data_analyze.__init__(self,path_list)
+class NotNumTest(Data_analyze):
+    '''
+    空值异常测试类
+    '''
+    def __init__(self, dir_path):
+        super().__init__(dir_path)
+
+    def examine(self):
+        print("-----正在检查数据，请稍后-----")
+        for df in self._df:
+            #df = df[:100]
+            for No in range(1, len(df)+1):
+                row = np.array(df.loc[No]).tolist()
+                try:
+                    region = row[-1]; year = row[0]; month = row[1]; day = row[2]; hour = row[3]
+                    pol_data = row[5:10]
+                    for pol in pol_data:
+                        if np.isnan(pol) == True:
+                            pollutant = self._pollutant[pol_data.index(pol)]
+                            # 用该缺失值这一天的均值代替
+                            df_day = df[(df['year'] == year) & (df['month'] == month) & (df['day'] == day)]
+                            df.at[No, pollutant] = df_day[pollutant].mean()
+                            raise NotNumError(region, year, month, day, hour, pollutant)
+                except NotNumError as nne:
+                    print(nne._message)
+            print(f"{region} Sheet finishes examining.")
         
-    def read_data(self):
-        doc_list = self.df_list
-        year_list = self.time_list
-        province_list = self.province_list
-        for y in range(len(doc_list)):
-            self._year = year_list[y]
-            for sheet in doc_list[y]:
-                if sheet != 'Sum':
-                    self._province = sheet
-                    df_temp = doc_list[y][sheet]
-                    row_index = list(df_temp[df_temp.columns[0]])
-                    col_index = list(df_temp.columns)
-                    #print(col_index)
-                    values = df_temp.values
-                    for industry_index in range(2,len(row_index)):
-                        if not pd.isnull(row_index[industry_index]):
-                            self._industry = row_index[industry_index]
-                            for type_index in range(1,len(col_index)-3):
-                                if not pd.isnull(col_index[type_index]):
-                                    self._type = col_index[type_index]
-                                    if pd.isnull(values[industry_index][type_index]):
-                                        raise NotnumError(self._year,self._province,self._industry,self._type)
-                                    else:
-                                        continue
-                    #print(sheet)
-        #print(len(doc_list))
-
 def main():
-    #pol_data = Data_analyze('week7/PRSA_Data_20130301-20170228')
-    #pol_time = pol_data.time_analyze("PM2.5", "Aotizhongxin")
-    #print(pol_time)
-    #pol_area = pol_data.space_analyze("SO2", 2015)
-    #pol_area = pol_data.space_analyze("SO2", 2015, 12)
-    #print(pol_area)
+    #数据分析类测试
+    '''
+    pol_data = Data_analyze('week7/PRSA_Data_20130301-20170228')
+    pol_time = pol_data.time_analyze("PM2.5", "Aotizhongxin")
+    print(pol_time)
+    pol_area = pol_data.space_analyze("SO2", 2015)
+    pol_area = pol_data.space_analyze("SO2", 2015, 12)
+    print(pol_area)
+    '''
     
+    #数据可视化类测试
+    '''
     pol_data = Data_view('week7/PRSA_Data_20130301-20170228')
-    #pol_data.time_view("PM2.5", "Aotizhongxin")
+    pol_data.time_view("PM2.5", "Aotizhongxin")
     pol_data.space_view("SO2", 2015, 12)
+    '''
+
+    #异常值抛出类测试
+    data_test = NotNumTest('week7/PRSA_Data_20130301-20170228')
+    data_test.examine()
 
 if __name__ == '__main__': main()
