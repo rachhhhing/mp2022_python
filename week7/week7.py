@@ -84,6 +84,12 @@ class Data_analyze:
         pol_space = pd.DataFrame(pol_space).set_index('Region')
         return pol_space
 
+    def cor_analyze(self):
+        df_all = pd.concat(self._df)            # 拼接所有数据表
+        df_pol_cli = df_all.iloc[:,4:-1]
+        corr = df_pol_cli.corr().iloc[:-5,6:]   # 得到污染物和气候的相关系数矩阵
+        return corr
+
 class Data_view(Data_analyze):
     '''
     数据可视化类
@@ -176,6 +182,12 @@ class Data_view(Data_analyze):
                     title_opts=opts.TitleOpts(title="北京空气质量分布"))
         # 渲染
         g.render(f"week7/Beijing {pol} distribution in {str(time)[1:][:-1]}.html")
+    
+    def cor_view(self):
+        corr = super().cor_analyze()
+        heatmap = sns.heatmap(corr, cmap="RdBu_r")
+        plt.title('Covariance Matrix', fontdict={'fontsize':18})
+        plt.show()
 
 class NotNumError(ValueError):
     '''
@@ -219,21 +231,19 @@ class NotNumTest(Data_analyze):
         
 def main():
     #数据分析类测试
-    '''
     pol_data = Data_analyze('week7/PRSA_Data_20130301-20170228')
     pol_time = pol_data.time_analyze("PM2.5", "Aotizhongxin")
     print(pol_time)
-    pol_area = pol_data.space_analyze("SO2", 2015)
     pol_area = pol_data.space_analyze("SO2", 2015, 12)
     print(pol_area)
-    '''
+    corr = pol_data.cor_analyze()
+    print(corr)
     
     #数据可视化类测试
-    '''
     pol_data = Data_view('week7/PRSA_Data_20130301-20170228')
     pol_data.time_view("PM2.5", "Aotizhongxin")
     pol_data.space_view("SO2", 2015, 12)
-    '''
+    pol_data.cor_view()
 
     #异常值抛出类测试
     data_test = NotNumTest('week7/PRSA_Data_20130301-20170228')
