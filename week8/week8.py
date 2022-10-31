@@ -1,7 +1,13 @@
 import os
 import sys
+import time
+import random
+import pysnooper
+from tqdm import tqdm
 from functools import wraps
 from playsound import playsound
+from memory_profiler import profile
+from line_profiler import LineProfiler
 
 '''
 # 用函数实现文件路径检查装饰器
@@ -74,3 +80,38 @@ def test():
 test()
 '''
 
+# 用类模拟耗时耗内存的操作
+# 这里用生成一个大字典（结构为"ID:成绩"）模拟耗内存操作，用遍历字典查询考某成绩的学生模拟耗时操作
+class Grade:
+    def __init__(self):
+        self.dic = {}
+
+    @ profile                                   # memory profile
+    @ pysnooper.snoop('week8/dic.log')          # pysnooper
+    def input_grade(self):
+        """
+        录入成绩的方法，即生成大字典，模拟耗内存操作
+        """
+        for i in range(10 ** 2):
+            self.dic[i] = random.randint(0,100)
+    
+    def search(self, grade):
+        """
+        查询成绩的方法，即遍历大字典，模拟耗时操作
+        """
+        stu = []
+        for key in tqdm(self.dic):              # tqdm
+            time.sleep(0.000001)
+            if self.dic[key] == grade:
+                stu.append(key)
+        return stu
+
+# 测试
+g = Grade()
+g.input_grade()
+
+lp = LineProfiler()                             # line profile
+lp.enable_by_count()
+lp_wrapper = lp(g.search)
+stu = g.search(90)
+lp.print_stats()
