@@ -50,7 +50,7 @@ class End_Music:
                     playsound(self.music_path_list)
                 elif isinstance(ans, tuple):
                     playsound(self.music_path_tuple)
-            return func(*args, **kwargs)
+            return ans_list
         return wrapper
 
 # 测试
@@ -80,6 +80,7 @@ def test():
 test()
 '''
 
+'''
 # 用类模拟耗时耗内存的操作
 # 这里用生成一个大字典（结构为"ID:成绩"）模拟耗内存操作，用遍历字典查询考某成绩的学生模拟耗时操作
 class Grade:
@@ -115,3 +116,4 @@ lp.enable_by_count()
 lp_wrapper = lp(g.search)
 stu = g.search(90)
 lp.print_stats()
+'''
