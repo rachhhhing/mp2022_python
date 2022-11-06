@@ -18,19 +18,16 @@ def random_walk(mu, x, sigma_square, N):
 for i in random_walk(1, 1, 4, 10):
     print(i)
 
-# 实现多维随机游走序列生成器，PS:这里以三维为例
-def random_walk_vector(mu, x, s1, s2, s3, N):
-    vector = []
-    walk1 = list(random_walk(mu, x, s1, N))
-    walk2 = list(random_walk(mu, x, s2, N))
-    walk3 = list(random_walk(mu, x, s3, N))
-    for vec in zip(walk1, walk2, walk3):
-        vector.append(vec)
-    return vector
+# 实现多维随机游走序列生成器
+def random_walk_vector(*walk):
+    return zip(*walk)
 
 # 测试
-vector = random_walk_vector(1, 1, 0.01, 25, 100, 10)
-for vec in vector:
+walk1 = random_walk(1, 1, 0.01, 10)
+walk2 = random_walk(1, 1, 25, 10)
+walk3 = random_walk(1, 1, 100, 10)
+walk_vec = random_walk_vector(walk1, walk2, walk3)
+for vec in walk_vec:
     print(vec)
 '''
 
