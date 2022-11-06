@@ -97,7 +97,7 @@ class GifPlotter(Plotter):
             else:
                 self._image.append(each)
 
-    def plot(self, save_path = 'week10/GifPlotter.gif', duration=0.1):
+    def plot(self, save_path = 'week10/GifPlotter.gif', duration=0.5):
         imageio.mimsave(save_path, self._image, 'GIF', duration=duration)
     
 def main():
@@ -135,14 +135,22 @@ def main():
     imageplt.plot()
     '''
 
+    '''
     # 图片序列的可视化
     image = []
     for root, dirs, files in os.walk('week10\photo'):
         for f in files:
             #image.append(os.path.join(root,f))
-            img = imageio.imread(os.path.join(root,f))
-            image.append(img)
+            try:
+                img = imageio.imread(os.path.join(root,f))
+                image.append(img)
+            except:
+                pass
     gifplt = GifPlotter(image)
     gifplt.plot()
+    '''
+
+    # 超过三维的多维数组绘制
+
 
 if __name__ == '__main__': main()
