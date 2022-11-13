@@ -2,9 +2,12 @@ import os
 import abc
 import jieba
 import imageio
+import librosa
 import numpy as np
+import seaborn as sns
 from PIL import Image 
 import matplotlib.pyplot as plt
+from sklearn.decomposition import PCA
 from wordcloud import WordCloud, ImageColorGenerator
 
 # 抽象类
@@ -30,11 +33,11 @@ class ArrayPlotter(Plotter):
 
     def plot(self):
         if len(self._array) == 2:
-            plt.scatter(self._array[0],self._array[1])
+            plt.scatter(self._array[0], self._array[1])
             plt.show()
         elif len(self._array) == 3:
             ax = plt.subplot(projection = '3d')
-            ax.scatter(self._array[0],self._array[1],self._array[2])
+            ax.scatter(self._array[0], self._array[1], self._array[2])
             plt.show()
         else:
             print(f"不支持{len(self._array)}数组绘制")
@@ -97,8 +100,36 @@ class GifPlotter(Plotter):
             else:
                 self._image.append(each)
 
-    def plot(self, save_path = 'week10/GifPlotter.gif', duration=0.5):
+    def plot(self, save_path='week10/GifPlotter.gif', duration=0.5):
         imageio.mimsave(save_path, self._image, 'GIF', duration=duration)
+
+# 超过3维数组可视化
+class KeyFeaturePlotter(Plotter):
+    def __init__(self, array):
+        self._array = array
+
+    def plot(self):
+        if len(self._array) <= 3:
+            print(f"不支持{len(self._array)}数组绘制")
+        else:
+            pca = PCA(n_components=2)               # 降到2维
+            pca.fit(self._array)
+            array = pca.transform(self._array)      # 降维后结果
+            for point in array:
+                plt.scatter(point[0], point[1])
+            plt.show()
+
+# 音频数据绘制
+class MusicPlotter(Plotter):
+    def __init__(self, music):
+        self._music = music
+
+    def plot(self):
+        x , sr = librosa.load(self._music)
+        #print(type(x), type(sr))  
+        #plt.figure(figsize=(10, 5))
+        librosa.display.waveplot(x, sr=sr)
+        plt.show()
     
 def main():
     '''
@@ -150,7 +181,16 @@ def main():
     gifplt.plot()
     '''
 
+    '''
     # 超过三维的多维数组绘制
+    data = sns.load_dataset("iris")                 # 用的是著名的鸢尾花的数据
+    data = data[(data['species']=='setosa') | (data['species']=='virginica')]
+    array = data.iloc[:, :4]
+    keyfeatureplt = KeyFeaturePlotter(array)
+    keyfeatureplt.plot()
+    '''
 
+    # 音频数据绘制
+    music = 
 
 if __name__ == '__main__': main()
