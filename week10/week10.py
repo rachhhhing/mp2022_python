@@ -1,11 +1,13 @@
 import os
 import abc
+import cv2
 import jieba
 import imageio
 import librosa
+import librosa.display
 import numpy as np
 import seaborn as sns
-from PIL import Image 
+from PIL import Image
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 from wordcloud import WordCloud, ImageColorGenerator
@@ -100,7 +102,7 @@ class GifPlotter(Plotter):
             else:
                 self._image.append(each)
 
-    def plot(self, save_path='week10/GifPlotter.gif', duration=0.5):
+    def plot(self, save_path='./GifPlotter.gif', duration=0.5):
         imageio.mimsave(save_path, self._image, 'GIF', duration=duration)
 
 # 超过3维数组可视化
@@ -125,11 +127,27 @@ class MusicPlotter(Plotter):
         self._music = music
 
     def plot(self):
-        x , sr = librosa.load(self._music)
-        #print(type(x), type(sr))  
-        #plt.figure(figsize=(10, 5))
-        librosa.display.waveplot(x, sr=sr)
+        x, sr = librosa.load(self._music)
+        librosa.display.waveshow(x, sr=sr)
         plt.show()
+
+# 视频数据绘制
+class VideoPlotter(Plotter):
+    def __init__(self, video):
+        self._video = video
+
+    def plot(self, save_path='./VideoPlotter.gif', duration=0.05):
+        cap = cv2.VideoCapture(self._video)
+        gif = []
+        while cap.isOpened():
+            ret, frame = cap.read()
+            if ret == False:
+                break
+            frame = frame[..., ::-1]                # BGR转成RGB
+            gif.append(frame)
+        cap.release()
+        cv2.destroyAllWindows()
+        imageio.mimsave(save_path, gif, 'GIF', duration=duration)
     
 def main():
     '''
@@ -178,7 +196,7 @@ def main():
             except:
                 pass
     gifplt = GifPlotter(image)
-    gifplt.plot()
+    gifplt.plot(save_path='week10/GifPlotter.gif')
     '''
 
     '''
@@ -190,7 +208,17 @@ def main():
     keyfeatureplt.plot()
     '''
 
+    '''
     # 音频数据绘制
-    music = 
+    #music = 'week10/music-GalwayGirl.mp3'
+    music = 'week10/music-MELANCHOLY.mp3'
+    musicplt = MusicPlotter(music)
+    musicplt.plot()
+    '''
+
+    # 视频数据绘制
+    video = 'week10/video.mp4'
+    videoplt = VideoPlotter(video)
+    videoplt.plot(save_path='week10/VideoPlotter.gif')
 
 if __name__ == '__main__': main()
