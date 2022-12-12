@@ -33,9 +33,9 @@ def consumer(id):
     res = requests.get(img)
     image = Image.open(BytesIO(res.content))
     try:
-        image.save('week12/cover/'+ title + '.jpg')
+        image.save('week14/cover/'+ title + '.jpg')
     except:
-        image.save('week12/cover/'+ title + '.png')
+        pass
     # 获取创建者id
     idd = soup.select('.s-fc7')[0]['href'].split('=')[-1]
     # 获取创建者昵称
@@ -57,20 +57,21 @@ def consumer(id):
     comments = soup.select('#cnt_comment_count')[0].get_text().replace('评论', '0')
     #print(title,idd,nickname,text,songs,plays,adds,shares,comments)
     # 将详情页信息写入CSV文件中
-    with open('week14/music_message.csv', 'a+', encoding='utf-8') as f:
-        f.write(title + ',' + idd + ',' + nickname + ',' + text + ',' + songs + ',' + plays + ',' + adds + ',' + shares + ',' + comments + '\n')
+    #with open('week14/music_message.csv', 'a+', encoding='utf-8') as f:
+        #f.write(title + ',' + idd + ',' + nickname + ',' + text + ',' + songs + ',' + plays + ',' + adds + ',' + shares + ',' + comments + '\n')
 
 if __name__=='__main__':
     async_time_start = time.time()
+    '''
     head = ['歌单标题','id','昵称','介绍','歌曲数量','播放量','添加到播放列表次数','分享次数','评论数']
     with open('week14/music_message.csv', 'w', encoding='utf-8') as f:
         csv_writer = csv.writer(f)
         csv_writer.writerow(head)
-    
+    '''
     p_jobs = []
     c_jobs = []
     p = pool.Pool(20)   # 控制数目
-    for i in range(0, 350, 35):
+    for i in range(0, 1300, 35):
         url = 'https://music.163.com/discover/playlist/?cat=华语&order=hot&limit=35&offset=' + str(i)
         p_jobs.append(p.spawn(producer, url))
     gevent.joinall(p_jobs)
