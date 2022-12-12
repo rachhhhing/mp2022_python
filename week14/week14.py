@@ -19,6 +19,7 @@ def producer(url):
     html = response.text 
     soup = BeautifulSoup(html, 'html.parser')   
     ids = soup.select('.dec a')                             # 获取包含歌单详情页网址的标签
+    print(ids)
     id_list.extend(ids)
 
 def consumer(id):
@@ -55,7 +56,7 @@ def consumer(id):
     shares = soup.find('a','u-btni u-btni-share')['data-count']
     # 歌单评论数
     comments = soup.select('#cnt_comment_count')[0].get_text().replace('评论', '0')
-    #print(title,idd,nickname,text,songs,plays,adds,shares,comments)
+    print(title,idd,nickname,text,songs,plays,adds,shares,comments)
     # 将详情页信息写入CSV文件中
     #with open('week14/music_message.csv', 'a+', encoding='utf-8') as f:
         #f.write(title + ',' + idd + ',' + nickname + ',' + text + ',' + songs + ',' + plays + ',' + adds + ',' + shares + ',' + comments + '\n')
@@ -71,12 +72,12 @@ if __name__=='__main__':
     p_jobs = []
     c_jobs = []
     p = pool.Pool(20)   # 控制数目
-    for i in range(0, 1300, 35):
+    for i in range(0, 35, 35):
         url = 'https://music.163.com/discover/playlist/?cat=华语&order=hot&limit=35&offset=' + str(i)
         p_jobs.append(p.spawn(producer, url))
     gevent.joinall(p_jobs)
-    for id in id_list:
-        c_jobs.append(p.spawn(consumer, id))
-    gevent.joinall(c_jobs)
+    #for id in id_list:
+        #c_jobs.append(p.spawn(consumer, id))
+    #gevent.joinall(c_jobs)
 
-    print("总耗时：%.4f" %(time.time()-async_time_start))
+    #print("总耗时：%.4f" %(time.time()-async_time_start))
