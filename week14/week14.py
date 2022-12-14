@@ -45,7 +45,7 @@ def consumer(id):
     # 歌单内歌曲数
     songs = soup.find('span', id="playlist-track-count").text
     # 播放量
-    plays = soup.find('span', id="playlist-track-count").text
+    plays = soup.find('strong', "s-fc6").text
     # 添加进播放列表次数
     adds = soup.find('a', 'u-btni u-btni-fav')['data-count']
     # 分享次数
@@ -67,7 +67,7 @@ if __name__=='__main__':
     p_jobs = []
     c_jobs = []
     p = pool.Pool(20)   # 控制数目
-    for i in range(0, 1300, 35):
+    for i in range(0, 35, 35):
         url = 'https://music.163.com/discover/playlist/?cat=华语&order=hot&limit=35&offset=' + str(i)
         p_jobs.append(p.spawn(producer, url))
     gevent.joinall(p_jobs)
